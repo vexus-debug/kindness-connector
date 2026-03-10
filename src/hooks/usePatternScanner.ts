@@ -129,7 +129,8 @@ export function usePatternScanner(trendAssets: AssetTrend[] = []) {
 
               const cPatterns = detectCandlestickPatterns(candles);
               for (const p of cPatterns) {
-                const formedAt = candles[p.candleIndex]?.time ?? now;
+                const candleTime = (p.candleIndex >= 0 && p.candleIndex < candles.length) ? candles[p.candleIndex].time : 0;
+                const formedAt = candleTime > 0 ? candleTime : (candles[candles.length - 1]?.time ?? now);
                 const { significance, aligned } = adjustSignificance(p.significance, p.type, sym, tf, currentTrends);
                 newCandlestick.push({
                   id: `cs-${symbol}-${tf}-${p.name}-${now}`,
@@ -142,7 +143,8 @@ export function usePatternScanner(trendAssets: AssetTrend[] = []) {
 
               const chPatterns = detectChartPatterns(candles);
               for (const p of chPatterns) {
-                const formedAt = candles[p.endIndex]?.time ?? now;
+                const candleTime = (p.endIndex >= 0 && p.endIndex < candles.length) ? candles[p.endIndex].time : 0;
+                const formedAt = candleTime > 0 ? candleTime : (candles[candles.length - 1]?.time ?? now);
                 const { significance, aligned } = adjustSignificance(p.significance, p.type, sym, tf, currentTrends);
                 newChart.push({
                   id: `ch-${symbol}-${tf}-${p.name}-${now}`,
@@ -155,7 +157,8 @@ export function usePatternScanner(trendAssets: AssetTrend[] = []) {
 
               const msEvents = detectMarketStructure(candles);
               for (const p of msEvents) {
-                const formedAt = candles[p.candleIndex]?.time ?? now;
+                const candleTime = (p.candleIndex >= 0 && p.candleIndex < candles.length) ? candles[p.candleIndex].time : 0;
+                const formedAt = candleTime > 0 ? candleTime : (candles[candles.length - 1]?.time ?? now);
                 const { significance, aligned } = adjustSignificance(p.significance, p.type, sym, tf, currentTrends);
                 newStructure.push({
                   id: `ms-${symbol}-${tf}-${p.name}-${now}`,
