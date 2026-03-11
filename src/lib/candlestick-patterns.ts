@@ -104,7 +104,7 @@ export function detectCandlestickPatterns(candles: Candle[], excludeLastCandle =
 
     // Bullish Engulfing
     if (isBullish(c) && isBearish(prev) && c.open <= prev.close && c.close >= prev.open && body > bodySize(prev)) {
-      patterns.push({ name: 'Bullish Engulfing', type: 'bullish', significance: 'high', candleIndex: i, description: 'Bull candle engulfs prior bear candle' });
+      patterns.push({ name: 'Bullish Engulfing', type: 'bullish', significance: 'high', candleIndex: i, description: 'Bull candle fully engulfs prior bear. Strong reversal signal. Enter long above high, stop below engulfing low. Target nearest resistance or 1:2 RR.' });
     }
 
     // Bearish Engulfing
