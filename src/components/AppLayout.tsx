@@ -1,10 +1,11 @@
 import { ReactNode } from 'react';
 import { NavLink } from '@/components/NavLink';
-import { BarChart3, ChartCandlestick, LayoutGrid, Network } from 'lucide-react';
+import { BarChart3, ChartCandlestick, LayoutGrid, Network, Layers } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Scanner', icon: BarChart3 },
+  { to: '/range-scanner', label: 'Range', icon: Layers },
   { to: '/candlestick-patterns', label: 'Candles', icon: ChartCandlestick },
   { to: '/chart-patterns', label: 'Charts', icon: LayoutGrid },
   { to: '/market-structure', label: 'SMC', icon: Network },
@@ -16,7 +17,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
   if (isMobile) {
     return (
       <div className="flex h-[100dvh] flex-col bg-background">
-        {/* Top nav bar for pages */}
         <nav className="flex border-b border-border bg-card px-1">
           {NAV_ITEMS.map((item) => (
             <NavLink
@@ -37,7 +37,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar nav */}
       <nav className="flex w-14 flex-col items-center gap-1 border-r border-border bg-card py-3">
         {NAV_ITEMS.map((item) => (
           <NavLink

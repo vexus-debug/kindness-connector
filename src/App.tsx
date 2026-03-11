@@ -6,7 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/AppLayout";
 import { ScannerProvider } from "@/contexts/ScannerContext";
 import { PatternScannerProvider } from "@/contexts/PatternScannerContext";
+import { RangeScannerProvider } from "@/contexts/RangeScannerContext";
 import Dashboard from "./pages/Dashboard.tsx";
+import RangeScanner from "./pages/RangeScanner.tsx";
 import CandlestickPatterns from "./pages/CandlestickPatterns.tsx";
 import ChartPatterns from "./pages/ChartPatterns.tsx";
 import MarketStructure from "./pages/MarketStructure.tsx";
@@ -21,17 +23,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScannerProvider>
-          <PatternScannerProvider>
-            <AppLayout>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/candlestick-patterns" element={<CandlestickPatterns />} />
-                <Route path="/chart-patterns" element={<ChartPatterns />} />
-                <Route path="/market-structure" element={<MarketStructure />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AppLayout>
-          </PatternScannerProvider>
+          <RangeScannerProvider>
+            <PatternScannerProvider>
+              <AppLayout>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/range-scanner" element={<RangeScanner />} />
+                  <Route path="/candlestick-patterns" element={<CandlestickPatterns />} />
+                  <Route path="/chart-patterns" element={<ChartPatterns />} />
+                  <Route path="/market-structure" element={<MarketStructure />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AppLayout>
+            </PatternScannerProvider>
+          </RangeScannerProvider>
         </ScannerProvider>
       </BrowserRouter>
     </TooltipProvider>
