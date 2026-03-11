@@ -148,7 +148,7 @@ export function detectCandlestickPatterns(candles: Candle[], excludeLastCandle =
       if (isBullish(prev2) && isBullish(prev) && isBullish(c) &&
         prev.close > prev2.close && c.close > prev.close &&
         bodySize(prev2) > avg * 0.5 && bodySize(prev) > avg * 0.5 && body > avg * 0.5) {
-        patterns.push({ name: 'Three White Soldiers', type: 'bullish', significance: 'high', candleIndex: i, description: 'Three consecutive strong bull candles' });
+        patterns.push({ name: 'Three White Soldiers', type: 'bullish', significance: 'high', candleIndex: i, description: 'Three consecutive strong bull candles — strong uptrend continuation. Enter long on pullback to last candle body. Stop below first soldier low.' });
       }
 
       // Three Black Crows
