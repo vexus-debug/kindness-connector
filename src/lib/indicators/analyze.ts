@@ -20,6 +20,22 @@ export interface SupportResistance {
   resistanceDistance: number;
 }
 
+export interface TrendDuration {
+  bars: number;
+  startPrice: number;
+  startTime: number;
+  currentPrice: number;
+  trendMove: number; // percentage
+  fibRetrace382: number;
+  fibRetrace500: number;
+  fibRetrace618: number;
+  fibExtend1272: number;
+  fibExtend1618: number;
+  exhaustionRisk: 'low' | 'medium' | 'high';
+  exhaustionSignals: string[];
+  atrStop: number; // ATR-based trailing stop
+}
+
 export interface ConfirmedTrend extends TrendSignal {
   confirmations: number;
   totalChecks: number;
@@ -31,6 +47,107 @@ export interface ConfirmedTrend extends TrendSignal {
   minusDI: number;
   probability: number;
   supportResistance: SupportResistance;
+  trendDuration: TrendDuration;
+}
+
+/** Calculate trend duration by walking back through candles to find where EMA crossover started */
+function calculateTrendDuration(
+  candles: Candle[],
+  direction: TrendDirection,
+  ema9: number[], ema21: number[],
+  rsi: number,
+  macdHist: number,
+  adx: number,
+  volumeRatio: number,
+  atr: number
+): TrendDuration {
+  const price = candles[candles.length - 1].close;
+  const isBull = direction === 'bull';
+
+  // Walk backwards to find where EMA9 crossed EMA21 (trend start)
+  let trendStartIdx = candles.length - 1;
+  for (let i = candles.length - 2; i >= 0; i--) {
+    if (i >= ema9.length || i >= ema21.length) break;
+    const wasAligned = isBull ? ema9[i] > ema21[i] : ema9[i] < ema21[i];
+    if (!wasAligned) {
+      trendStartIdx = i + 1;
+      break;
+    }
+    if (i === 0) trendStartIdx = 0;
+  }
+
+  const bars = candles.length - 1 - trendStartIdx;
+  const startPrice = candles[trendStartIdx]?.close ?? price;
+  const startTime = candles[trendStartIdx]?.time ?? 0;
+  const trendMove = ((price - startPrice) / startPrice) * 100;
+
+  // Find the extreme of the trend move for Fibonacci
+  let extreme = startPrice;
+  for (let i = trendStartIdx; i < candles.length; i++) {
+    if (isBull) {
+      if (candles[i].high > extreme) extreme = candles[i].high;
+    } else {
+      if (candles[i].low < extreme) extreme = candles[i].low;
+    }
+  }
+
+  // Fibonacci retracement levels (from trend extreme back towards start)
+  const moveRange = extreme - startPrice;
+  const fibRetrace382 = extreme - moveRange * 0.382;
+  const fibRetrace500 = extreme - moveRange * 0.5;
+  const fibRetrace618 = extreme - moveRange * 0.618;
+
+  // Fibonacci extension levels
+  const fibExtend1272 = startPrice + moveRange * 1.272;
+  const fibExtend1618 = startPrice + moveRange * 1.618;
+
+  // ATR-based trailing stop (2x ATR from current price)
+  const atrStop = isBull ? price - 2 * atr : price + 2 * atr;
+
+  // Exhaustion analysis
+  const exhaustionSignals: string[] = [];
+
+  // RSI extremes
+  if (isBull && rsi > 75) exhaustionSignals.push(`RSI overbought (${rsi.toFixed(0)})`);
+  if (!isBull && rsi < 25) exhaustionSignals.push(`RSI oversold (${rsi.toFixed(0)})`);
+
+  // MACD histogram declining
+  if (isBull && macdHist < 0) exhaustionSignals.push('MACD histogram negative');
+  if (!isBull && macdHist > 0) exhaustionSignals.push('MACD histogram positive');
+
+  // Extended duration (trend might be overextended)
+  if (bars > 50) exhaustionSignals.push(`Extended duration (${bars} bars)`);
+
+  // ADX declining (trend weakening)
+  if (adx < 20) exhaustionSignals.push(`ADX weak (${adx.toFixed(0)})`);
+
+  // Volume drying up
+  if (volumeRatio < 0.7) exhaustionSignals.push(`Low volume (${volumeRatio.toFixed(1)}x)`);
+
+  // Price extended from EMA (mean reversion likely)
+  const pctFromStart = Math.abs(trendMove);
+  if (pctFromStart > 20) exhaustionSignals.push(`Large move (${pctFromStart.toFixed(1)}%)`);
+
+  // Determine risk level
+  let exhaustionRisk: 'low' | 'medium' | 'high' = 'low';
+  if (exhaustionSignals.length >= 3) exhaustionRisk = 'high';
+  else if (exhaustionSignals.length >= 1) exhaustionRisk = 'medium';
+
+  return {
+    bars,
+    startPrice,
+    startTime,
+    currentPrice: price,
+    trendMove,
+    fibRetrace382,
+    fibRetrace500,
+    fibRetrace618,
+    fibExtend1272,
+    fibExtend1618,
+    exhaustionRisk,
+    exhaustionSignals,
+    atrStop,
+  };
 }
 
 /** Find nearest support and resistance */
@@ -464,6 +581,8 @@ export function analyzeTrend(
 
   const supportResistance = findSupportResistance(candles, { e9, e21, e50, e200 });
 
+  const trendDuration = calculateTrendDuration(candles, direction, ema9, ema21, rsi, macd.histogram, adx, volumeRatio, atr);
+
   return {
     direction, strength,
     ema9: e9, ema21: e21, ema50: e50, ema200: e200,
@@ -472,6 +591,6 @@ export function analyzeTrend(
     indicators,
     rsi, macdHistogram: macd.histogram,
     priceStructure, plusDI, minusDI,
-    probability, supportResistance,
+    probability, supportResistance, trendDuration,
   };
 }
