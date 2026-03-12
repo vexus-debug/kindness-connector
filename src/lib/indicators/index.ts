@@ -4,5 +4,5 @@ export { calculateTR, smoothedAvg, calculateATR, calculateADX, calculateParaboli
 export { calculateRSI, calculateMACD, calculateStochastic, calculateStochRSI, calculateWilliamsR, calculateCCI, calculateROC, calculateMFI, calculateCMF, calculateTSI } from './momentum';
 export { calculateBollingerBands, calculateKeltnerChannels, calculateDonchianChannels, calculateHistoricalVolatility, detectSqueeze } from './volatility';
 export { calculateVolumeRatio, calculateOBV, calculateAD, calculateVPT, detectVolumeSpikes, detectVolumeClusters } from './volume';
-export type { IndicatorDetail, SupportResistance, ConfirmedTrend } from './analyze';
+export type { IndicatorDetail, SupportResistance, ConfirmedTrend, TrendDuration } from './analyze';
 export { analyzeTrend } from './analyze';
