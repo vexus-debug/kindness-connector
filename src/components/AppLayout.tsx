@@ -64,7 +64,8 @@ const MOBILE_TABS = [
 
 const MOBILE_TAB_PATHS = MOBILE_TABS.map((t) => t.to);
 
-export function AppLayout({ children }: { children: ReactNode }) {
+export function AppLayout() {
+  const children = <Outlet />;
   const isMobile = useIsMobile();
   const location = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
