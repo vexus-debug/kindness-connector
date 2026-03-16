@@ -23,6 +23,7 @@ import SymbolDetail from "./pages/SymbolDetail.tsx";
 import FundingRates from "./pages/FundingRates.tsx";
 import CorrelationMatrix from "./pages/CorrelationMatrix.tsx";
 import SectorRotation from "./pages/SectorRotation.tsx";
+import IndicatorScanner from "./pages/IndicatorScanner.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ const App = () => (
                   <Route path="/correlation" element={<CorrelationMatrix />} />
                   <Route path="/sector-rotation" element={<SectorRotation />} />
                   <Route path="/sectors" element={<SectorRotation />} />
+                  <Route path="/indicator-scanner" element={<IndicatorScanner />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
