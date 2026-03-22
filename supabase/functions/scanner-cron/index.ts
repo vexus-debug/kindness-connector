@@ -1339,6 +1339,23 @@ async function runFullScan(supabase: any) {
             });
           }
 
+          // --- Reversal analysis (reuse candles already fetched) ---
+          const revResult = analyzeReversalCron(candles);
+          if (revResult) {
+            const grade: "S" | "A" | "B" | "C" = revResult.score >= 75 ? "S" : revResult.score >= 60 ? "A" : revResult.score >= 45 ? "B" : "C";
+            if (grade !== "C") {
+              const rr = Math.abs(revResult.target - price) / Math.abs(price - revResult.invalidation);
+              reversalResults.push({
+                symbol, price, change24h: change, volume24h: vol, timeframe: tf,
+                direction: revResult.direction, score: Math.round(revResult.score), grade,
+                confirmations: revResult.confirmations, categoryCount: revResult.categoryCount,
+                topReason: revResult.confirmations.sort((a: any, b: any) => b.weight - a.weight)[0]?.name ?? "Multiple signals",
+                timestamp: Date.now(), invalidation: revResult.invalidation, target: revResult.target,
+                riskReward: Math.round(rr * 10) / 10,
+              });
+            }
+          }
+
         } catch { /* skip */ }
       }
     }));
