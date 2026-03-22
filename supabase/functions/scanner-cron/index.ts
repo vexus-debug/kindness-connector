@@ -1343,7 +1343,7 @@ async function runFullScan(supabase: any) {
           const revResult = analyzeReversalCron(candles);
           if (revResult) {
             const grade: "S" | "A" | "B" | "C" = revResult.score >= 75 ? "S" : revResult.score >= 60 ? "A" : revResult.score >= 45 ? "B" : "C";
-            if (grade !== "C") {
+            if (revResult.score >= 35) {
               const rr = Math.abs(revResult.target - price) / Math.abs(price - revResult.invalidation);
               reversalResults.push({
                 symbol, price, change24h: change, volume24h: vol, timeframe: tf,
