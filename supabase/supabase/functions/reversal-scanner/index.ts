@@ -692,8 +692,8 @@ function analyzeReversal(candles: Candle[]): { direction: "bull" | "bear"; score
   
   const score = Math.min(100, Math.max(0, rawScore + categoryBonus - conflictPenalty));
 
-  // Need minimum 2 categories and score >= 30 to qualify
-  if (categoryCount < 2 || score < 30) return null;
+  // Need minimum 1 category and score >= 30 to qualify
+  if (categoryCount < 1 || score < 30) return null;
 
   // Calculate invalidation and target
   const invalidation = direction === "bull" 
