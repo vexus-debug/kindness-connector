@@ -220,7 +220,7 @@ function SmcCard({ dp, isSelected, onClick }: { dp: DetectedPattern; isSelected:
         <p className="text-[11px] leading-relaxed text-muted-foreground">{p.description}</p>
 
         {/* Per-result SMC Overview */}
-        {meta && <SmcMetaOverview meta={meta} price={dp.price} />}
+        <SmcMetaOverview meta={meta || {}} price={dp.price} />
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-1">
@@ -250,8 +250,7 @@ function SmcMetaOverview({ meta, price }: { meta: SmcMeta; price: number }) {
   const hasRR = meta.riskReward != null;
   const hasLevels = meta.suggestedStop != null || meta.suggestedTarget != null;
   const hasPhase = meta.marketPhase != null;
-
-  if (!hasProbabilities && !hasScore && !hasRR && !hasPhase) return null;
+  const hasAnyData = hasProbabilities || hasScore || hasRR || hasPhase || meta.volatilityOk != null || meta.rangePosition != null;
 
   const phaseColor: Record<string, string> = {
     accumulation: 'text-accent',
@@ -259,6 +258,16 @@ function SmcMetaOverview({ meta, price }: { meta: SmcMeta; price: number }) {
     retracement: 'text-yellow-500',
     distribution: 'text-destructive',
   };
+
+  if (!hasAnyData) {
+    return (
+      <div className="rounded-lg bg-secondary/40 p-2.5">
+        <p className="text-[10px] text-muted-foreground flex items-center gap-1.5">
+          <Gauge className="h-3 w-3" /> Hit rescan ↻ for full SMC analysis
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg bg-secondary/40 p-2.5 space-y-2">
