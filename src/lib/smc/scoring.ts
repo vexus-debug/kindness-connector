@@ -1,7 +1,7 @@
 import type { Candle } from '@/types/scanner';
-import type { SmcEvent, SmcMeta, LiquidityPool, RangeZone, MarketPhase, TradingSession, SwingPoint } from './types';
+import type { SmcEvent, SmcMeta, LiquidityPool, RangeZone, MarketPhase, TradingSession, SwingPoint, KeyLevel } from './types';
 import { getSessionWeight, getRangePosition } from './market-phase';
-import { findNearbyKeyLevel, type KeyLevel } from './key-levels';
+import { findNearbyKeyLevel } from './key-levels';
 
 /** Calculate a structure strength score (0-100) for an event */
 export function calcStructureScore(event: SmcEvent, ctx: {
