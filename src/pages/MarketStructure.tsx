@@ -144,12 +144,8 @@ const MarketStructurePage = () => {
                   <SmcCard
                     key={dp.id}
                     dp={dp}
-                    isSelected={
-                      selectedPattern?.symbol === (dp.symbol.includes('USDT') ? dp.symbol : `${dp.symbol}USDT`) &&
-                      selectedPattern?.patternName === dp.pattern.name &&
-                      selectedPattern?.timeframe === dp.timeframe
-                    }
-                    onClick={() => handleClick(dp)}
+                    isSelected={false}
+                    onClick={() => {}}
                   />
                 ))}
               </div>
