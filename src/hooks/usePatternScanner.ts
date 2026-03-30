@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { fetchTickers, fetchKlines } from '@/lib/bybit-api';
 import { detectCandlestickPatterns, type CandlestickPattern } from '@/lib/candlestick-patterns';
 import { detectChartPatterns, type ChartPattern } from '@/lib/chart-patterns';
-import { detectMarketStructure, type MarketStructureEvent } from '@/lib/market-structure';
+import { analyzeSmartMoneyConcepts, type SmcEvent, type SmcAnalysis } from '@/lib/smc';
 import type { Timeframe, AssetTrend } from '@/types/scanner';
 import { TIMEFRAME_LABELS } from '@/types/scanner';
 
