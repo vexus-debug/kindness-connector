@@ -1,7 +1,7 @@
 import type { Candle } from '@/types/scanner';
 import type { SmcAnalysis, SmcEvent } from './types';
 import { findSwings } from './swings';
-import { detectBosChoch, detectContinuationPatterns } from './bos-choch';
+import { detectBosChoch, detectContinuationPatterns, countFailedChoch } from './bos-choch';
 import { detectLiquidityPools, detectLiquiditySweeps, detectInducement } from './liquidity';
 import { detectFVGs, detectOrderBlocks } from './fvg-ob';
 import { detectMarketPhase, detectRange, detectRangeEvents, detectSession } from './market-phase';
